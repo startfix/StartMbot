@@ -4,7 +4,7 @@ from KyyRobot import DEV_USERS, DRAGONS, DEMONS, TIGERS, WOLVES
 
 from telegram import Update
 from telegram.ext import CommandHandler, MessageHandler, RegexHandler, Filters
-from pyrate_limiter import (
+from pyrate-limiter import (
     BucketFullException,
     Duration,
     RequestRate,
