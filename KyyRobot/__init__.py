@@ -125,7 +125,7 @@ if ENV:
     BOT_ID = int(os.environ.get("BOT_ID", None))
     ARQ_API_URL = os.environ.get("ARQ_API_URL", "http://arq.hamker.dev")
     ARQ_API_KEY = os.environ.get("ARQ_API_KEY", None)
-    REDIS_URL = os.environ.get("REDIS_URL")
+    REDIS_URL = os.environ.get("REDIS_URL", "redis-15776.c61.us-east-1-3.ec2.cloud.redislabs.com:15776")
     ERROR_LOGS = os.environ.get("ERROR_LOGS", -1001380293847)
     ALLOW_CHATS = os.environ.get("ALLOW_CHATS", True)
 
