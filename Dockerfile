@@ -65,11 +65,11 @@ RUN apt update && apt upgrade -y && \
 RUN pip3 install --upgrade pip setuptools
 
 # Copy Python Requirements to /root/NastyRobot 
-RUN git clone -b main https://github.com/muhammadrizky16/NastyRobot /root/NastyRobot
-WORKDIR /root/NastyRobot
+RUN git clone -b main https://github.com/startdaz/Manage-V.4 /root/Manage-V.4
+WORKDIR /root/Manage-V.4
 
 #Copy config file to /root/NastyRobot/NastyRobot
-COPY ./NastyRobot/sample_config.py ./NastyRobot/config.py* /root/NastyRobot/NastyRobot/
+COPY ./Manage-V.4/sample_config.py ./Manage-V.4/config.py* /root/Manage-V.4/Manage-V.4/
 
 ENV PATH="/home/bot/bin:$PATH"
 
