@@ -7,7 +7,7 @@ beautifulsoup4
 requests
 requests_html
 python-telegram-bot==13.13
-SQLAlchemy==2.0.23
+SQLAlchemy==1.4.39
 psycopg2-binary
 feedparser
 PyYAML
@@ -76,7 +76,7 @@ better_profanity
 textblob 
 nudepy
 nekos.py
-motor==2.6.0 
+motor==2.4.0
 gpytranslate
 fontTools
 opencv-python-headless==4.5.4.60
