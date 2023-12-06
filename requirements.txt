@@ -7,7 +7,7 @@ beautifulsoup4
 requests
 requests_html
 python-telegram-bot==13.13
-SQLAlchemy==1.4.39
+SQLAlchemy==2.0.23
 psycopg2-binary
 feedparser
 PyYAML
