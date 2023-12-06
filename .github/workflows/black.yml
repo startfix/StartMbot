@@ -13,7 +13,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -U black
       - name: Run black
-        run: black KyyRobot
+        run: black Manage-V.4
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -22,7 +22,7 @@ jobs:
           body: Automated code formatting.
           labels: ⚫️ black
           branch: autofix
-          committer: muhammadrizky16 <muhammadrizky16@users.noreply.github.com>
+          committer: startdaz<startdaz@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: true
           delete-branch: true
