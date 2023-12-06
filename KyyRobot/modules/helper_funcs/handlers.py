@@ -1,26 +1,14 @@
-import KyyRobot.modules.sql.blacklistusers_sql as sql
-from KyyRobot import ALLOW_EXCL
-from KyyRobot import DEV_USERS, DRAGONS, DEMONS, TIGERS, WOLVES
-
+from pyrate_limiter import BucketFullException, Duration, Limiter, Rate
 from telegram import Update
-from telegram.ext import CommandHandler, MessageHandler, RegexHandler, Filters
-from pyrate_limiter import (
-    BucketFullException,
-    Duration,
-    Rate,
-    Limiter,
-    MemoryListBucket,
-)
+from telegram.ext import CommandHandler, Filters, MessageHandler, RegexHandler
+
+import KyyRobot .modules.sql.blacklistusers_sql as sql
+from KyyRobot  import ALLOW_EXCL, DEMONS, DEV_USERS, DRAGONS, TIGERS, WOLVES
 
 if ALLOW_EXCL:
-    CMD_STARTERS = ("/", "!", ".", "~")
+    CMD_STARTERS = ("/", "!")
 else:
-    CMD_STARTERS = (
-        "/",
-        "!",
-        ".",
-        "~",
-    )
+    CMD_STARTERS = "/"
 
 
 class AntiSpam:
@@ -34,17 +22,12 @@ class AntiSpam:
         )
         # Values are HIGHLY experimental, its recommended you pay attention to our commits as we will be adjusting the values over time with what suits best.
         Duration.CUSTOM = 15  # Custom duration, 15 seconds
-        self.sec_limit = RequestRate(6, Duration.CUSTOM)  # 6 / Per 15 Seconds
-        self.min_limit = RequestRate(20, Duration.MINUTE)  # 20 / Per minute
-        self.hour_limit = RequestRate(100, Duration.HOUR)  # 100 / Per hour
-        self.daily_limit = RequestRate(1000, Duration.DAY)  # 1000 / Per day
-        self.limiter = Limiter(
-            self.sec_limit,
-            self.min_limit,
-            self.hour_limit,
-            self.daily_limit,
-            bucket_class=MemoryListBucket,
-        )
+        self.sec_limit = Rate(6, Duration.CUSTOM)  # 6 / Per 15 Seconds
+        self.min_limit = Rate(20, Duration.MINUTE)  # 20 / Per minute
+        self.hour_limit = Rate(100, Duration.HOUR)  # 100 / Per hour
+        self.daily_limit = Rate(1000, Duration.DAY)  # 1000 / Per day
+        self.rates = [self.sec_limit, self.min_limit, self.hour_limit, self.daily_limit]
+        self.limiter = Limiter(self.rates)
 
     def check_user(self, user):
         """
@@ -81,15 +64,15 @@ class CustomCommandHandler(CommandHandler):
             except:
                 user_id = None
 
-            if user_id and sql.is_user_blacklisted(user_id):
-                return False
+            if user_id:
+                if sql.is_user_blacklisted(user_id):
+                    return False
 
             if message.text and len(message.text) > 1:
                 fst_word = message.text.split(None, 1)[0]
                 if len(fst_word) > 1 and any(
                     fst_word.startswith(start) for start in CMD_STARTERS
                 ):
-
                     args = message.text.split()[1:]
                     command = fst_word[1:].split("@")
                     command.append(message.bot.username)
@@ -105,14 +88,16 @@ class CustomCommandHandler(CommandHandler):
                     filter_result = self.filters(update)
                     if filter_result:
                         return args, filter_result
-                    return False
+                    else:
+                        return False
 
     def handle_update(self, update, dispatcher, check_result, context=None):
         if context:
             self.collect_additional_context(context, update, dispatcher, check_result)
             return self.callback(update, context)
-        optional_args = self.collect_optional_args(dispatcher, update, check_result)
-        return self.callback(dispatcher.bot, update, **optional_args)
+        else:
+            optional_args = self.collect_optional_args(dispatcher, update, check_result)
+            return self.callback(dispatcher.bot, update, **optional_args)
 
     def collect_additional_context(self, context, update, dispatcher, check_result):
         if isinstance(check_result, bool):
